@@ -9,24 +9,26 @@
 
 - name: "Include install_app.yml"
   ansible.builtin.include_tasks: install_app.yml
-  become: true
+  #become: true
   tags:
     - gobetween_install
 
 - name: "Include configure.yml"
   ansible.builtin.include_tasks: configure.yml
-  become: true
+  #become: true
   tags:
     - gobetween_configure
 
 - name: "Include healthcheck.yml"
   ansible.builtin.include_tasks: healthcheck.yml
-  become: true
+  #become: true
   tags:
     - gobetween_health
-
+  with_dict: "{{ gobetween_healthcheck }}"
+  when: item.value.kind != 'ping'
+    
 - name: "Ensure gobetween service is started and enabled"
-  become: true
+  #become: true
   ansible.builtin.service:
     daemon_reload: true
     name: gobetween
